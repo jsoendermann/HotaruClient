@@ -1,0 +1,1 @@
+## Hotaru JavaScript SDK Changelog
