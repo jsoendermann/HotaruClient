@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.15.2"
+    "axios": "^0.15.2",
+    "validator": "^6.1.0"
   },
   "scripts": {
     "build": "babel src -d lib",
@@ -16,12 +17,16 @@
     "babel-cli": "^6.16.0",
     "babel-eslint": "^7.0.0",
     "babel-plugin-transform-async-to-generator": "^6.16.0",
+    "babel-plugin-transform-builtin-extend": "^1.1.0",
     "babel-preset-es2015-node": "^6.1.1",
+    "decache": "^4.1.0",
     "eslint": "^3.8.0",
     "eslint-config-airbnb": "^12.0.0",
     "eslint-plugin-import": "^1.16.0",
     "eslint-plugin-jsx-a11y": "^2.2.3",
     "eslint-plugin-react": "^6.4.1",
-    "jasmine-es6": "^0.4.0"
+    "express": "^4.14.0",
+    "jasmine-es6": "^0.4.0",
+    "to-be-an-alphanumeric-string": "^1.0.1"
   }
 }
