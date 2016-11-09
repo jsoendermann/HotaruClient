@@ -2,6 +2,16 @@
   "name": "hotaru",
   "version": "0.1.0",
   "license": "MIT",
+  "author": {
+    "name": "Jan Soendermann",
+    "email": "jan.soendermann+npm@gmail.com"
+  },
+  "homepage": "https://github.com/jsoendermann/Hotaru-SDK-JS",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com/jsoendermann/Hotaru-SDK-JS.git"
+  },
+  "main": "lib/index.js",
   "dependencies": {
     "axios": "^0.15.2",
     "validator": "^6.1.0"
