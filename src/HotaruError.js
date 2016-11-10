@@ -2,7 +2,7 @@ const errorData = require('../errors.json');
 
 const messageWithCode = code => errorData.find(d => d.code === code).message;
 
-export default class HotaruError extends Error {
+export class HotaruError extends Error {
   constructor(code, details) {
     let message = '';
 

@@ -1,7 +1,7 @@
 import { isAlphanumeric } from 'validator';
 import HotaruError from './HotaruError';
 
-export default class HotaruUser {
+export class HotaruUser {
   constructor(data, changelog, eventListener) {
     this._data = data;
     this._changelog = changelog || null;

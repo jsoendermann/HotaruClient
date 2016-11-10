@@ -10,7 +10,7 @@ const USER_DATA_KEY = 'com.primlo.hotaru.userData';
 const USER_CHANGELOG_KEY = 'com.primlo.hotaru.userChangelog';
 
 
-export default {
+export const Hotaru = {
   async initialize(url, { privateMode = false, overrideSSLRequirement = false, storage } = {}) {
     if (this._hasBeenInitialized !== undefined) {
       throw new HotaruError(HotaruError.ALREADY_INITIALIZED);
