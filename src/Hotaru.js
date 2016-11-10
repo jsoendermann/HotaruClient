@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { isAlphanumeric } from 'validator';
-import HotaruUser from './HotaruUser';
-import HotaruError from './HotaruError';
+import { HotaruUser } from './HotaruUser';
+import { HotaruError } from './HotaruError';
 import { freshId } from './utils';
 
 const INSTALLATION_ID_KEY = 'com.primlo.hotaru.installationId';
@@ -38,10 +38,14 @@ export const Hotaru = {
 
     this._privateMode = privateMode;
 
-    this.INSTALLATION_ID = await this._storage.getItem(INSTALLATION_ID_KEY);
-    if (this.INSTALLATION_ID === null) {
-      this.INSTALLATION_ID = freshId();
-      await this._storage.setItem(INSTALLATION_ID_KEY, this.INSTALLATION_ID);
+    if (this._storage !== null) {
+      this.INSTALLATION_ID = await this._storage.getItem(INSTALLATION_ID_KEY);
+      if (this.INSTALLATION_ID === null) {
+        this.INSTALLATION_ID = freshId();
+        await this._storage.setItem(INSTALLATION_ID_KEY, this.INSTALLATION_ID);
+      }
+    } else {
+      this.INSTALLATION_ID = null;
     }
 
     await this._loadData();
@@ -89,6 +93,10 @@ export const Hotaru = {
       } else {
         this._userChangelog = JSON.parse(userChangesQueueString);
       }
+    } else {
+      this._sessionId = null;
+      this._userData = null;
+      this._userChangelog = null;
     }
   },
 
@@ -112,9 +120,9 @@ export const Hotaru = {
   async _saveUserToDisk() {
     if (this._storage !== null) {
       const dataString = JSON.stringify(this._userData);
-      const changesQueueString = JSON.stringify(this._userChangelog);
+      const userChangelog = JSON.stringify(this._userChangelog);
       await this._storage.setItem(USER_DATA_KEY, dataString);
-      await this._storage.setItem(USER_CHANGELOG_KEY, changesQueueString);
+      await this._storage.setItem(USER_CHANGELOG_KEY, userChangelog);
     }
   },
 
@@ -131,7 +139,17 @@ export const Hotaru = {
     if (this._userData === null || this._userChangelog === null || this._sessionId === null) {
       return null;
     }
-    const user = new HotaruUser(this);
+
+    const user = new HotaruUser({
+      get: (field) => this._userData[field],
+      set: (field, value) => { this._userData[field] = value; },
+      appendChange: (change) => {
+        if (change.type === 'set') {
+          this._changelog = this._changelog.filter(c => c.field !== change.field);
+        }
+        this._changelog.append(change);
+      },
+    });
     Object.seal(user);
     return user;
   },
@@ -174,8 +192,7 @@ export const Hotaru = {
   async convertGuestUser(email, password) {
     this._ensureInitialization();
 
-    const currentUser = await this.currentUser();
-    await currentUser.synchronize();
+    await this.synchronizeUser();
 
     const result = await this._makeRequest('_convertGuestUser', { sessionId: this._sessionId, email, password });
 

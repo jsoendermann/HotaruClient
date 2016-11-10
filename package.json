@@ -14,6 +14,7 @@
   "main": "lib/index.js",
   "dependencies": {
     "axios": "^0.15.2",
+    "lodash": "^4.16.6",
     "validator": "^6.1.0"
   },
   "scripts": {
@@ -37,7 +38,6 @@
     "eslint-plugin-jsx-a11y": "^2.2.3",
     "eslint-plugin-react": "^6.4.1",
     "express": "^4.14.0",
-    "hotaru-server": "^0.1.0",
     "jasmine-es6": "^0.4.0",
     "to-be-an-alphanumeric-string": "^1.0.1"
   }

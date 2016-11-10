@@ -160,5 +160,10 @@
     "name": "CAN_ONLY_APPEND_TO_ARRAYS",
     "code": 903,
     "message": "Can only increment number fields"
+  },
+  {
+    "name": "READ_ONLY_USER",
+    "code": 904,
+    "message": "Trying to set value on a read-only user"
   }
 ]

@@ -4,31 +4,32 @@
 import install from 'jasmine-es6';
 import toBeAnAlphanumericString from 'to-be-an-alphanumeric-string';
 
-import HotaruUser from '../lib/HotaruUser';
-import HotaruError from '../lib/HotaruError';
+import { HotaruUser, HotaruError } from '../lib/';
+import { UserDataStore } from '../lib/UserDataStore';
 
 install();
 
 
-describe('Hotaru', function () {
+describe('HotaruUser', function () {
   beforeAll(async function () {
     jasmine.addMatchers({ toBeAnAlphanumericString });
   });
 
   it('should construct user objects', async function () {
     const data = {};
+    const userDataStore = new UserDataStore(data, []);
 
-    const user = new HotaruUser(data);
-    expect(user._getData()).toBe(data);
+    const user = new HotaruUser(userDataStore);
+    expect(user._getDataStore().getRawData()).not.toBe(data); // This object gets deep copied
   });
 
   it('should get fields with get', async function () {
-    const user = new HotaruUser({ a: 1 });
+    const user = new HotaruUser(new UserDataStore({ a: 1 }));
     expect(user.get('a')).toEqual(1);
   });
 
   it('should only allow alphanumeric field names when getting', async function () {
-    const user = new HotaruUser();
+    const user = new HotaruUser(new UserDataStore({ }));
     try {
       user.get('__bla');
     } catch (error) {
@@ -37,7 +38,7 @@ describe('Hotaru', function () {
   });
 
   it('should only allow setting alphanumeric fields', async function () {
-    const user = new HotaruUser();
+    const user = new HotaruUser({});
     try {
       user.set('__bla', 1);
     } catch (error) {
@@ -46,7 +47,7 @@ describe('Hotaru', function () {
   });
 
   it('should set values', async function () {
-    const user = new HotaruUser({});
+    const user = new HotaruUser(new UserDataStore({}));
     user.set('a', 42);
     expect(user.get('a')).toEqual(42);
   });
@@ -58,23 +59,23 @@ describe('Hotaru', function () {
   }));
 
   it('should keep a changelog', () => {
-    const user = new HotaruUser({ a: 1, b: [] }, []);
+    const user = new HotaruUser(new UserDataStore({ a: 1, b: [] }, []));
     user.set('a', 2);
 
-    expect(s(user._changelog)).toEqual([
+    expect(s(user._getDataStore().getChangelog())).toEqual([
       { type: 'set', field: 'a', value: 2 },
     ]);
 
     user.increment('a');
 
-    expect(s(user._changelog)).toEqual([
+    expect(s(user._getDataStore().getChangelog())).toEqual([
       { type: 'set', field: 'a', value: 2 },
       { type: 'increment', field: 'a', value: 1 },
     ]);
 
     user.set('b', 'bla');
 
-    expect(s(user._changelog)).toEqual([
+    expect(s(user._getDataStore().getChangelog())).toEqual([
       { type: 'set', field: 'a', value: 2 },
       { type: 'increment', field: 'a', value: 1 },
       { type: 'set', field: 'b', value: 'bla' },
@@ -82,29 +83,20 @@ describe('Hotaru', function () {
 
     user.set('a', 3);
 
-    expect(s(user._changelog)).toEqual([
+    expect(s(user._getDataStore().getChangelog())).toEqual([
       { type: 'set', field: 'b', value: 'bla' },
       { type: 'set', field: 'a', value: 3 },
     ]);
   });
 
-  it('should emit events when setting', () => {
-    const user = new HotaruUser({}, [], { onUserWrite: (writeType, field, value) => {
-      expect(writeType).toEqual('set');
-      expect(field).toEqual('a');
-      expect(value).toEqual(42);
-    } });
-    user.set('a', 42);
-  });
-
   it('should allow setting internal fields with _internalSet', () => {
-    const user = new HotaruUser({});
+    const user = new HotaruUser(new UserDataStore({}));
     user._internalSet('__foo', 42);
-    expect(user._getData()).toEqual({ __foo: 42 });
+    expect(user._getDataStore().getRawData()).toEqual({ __foo: 42 });
   });
 
   it('sholud increment and decrement fields', () => {
-    const user = new HotaruUser({ a: 1, b: 10 });
+    const user = new HotaruUser(new UserDataStore({ a: 1, b: 10 }));
     user.increment('a', 1);
     user.decrement('b', 2);
     user.increment('c');
@@ -114,7 +106,7 @@ describe('Hotaru', function () {
   });
 
   it('should append', () => {
-    const user = new HotaruUser({ a: [] });
+    const user = new HotaruUser(new UserDataStore({ a: [] }));
     user.append('a', 1);
     user.append('b', 2);
     expect(user.get('a')).toEqual([1]);
@@ -122,11 +114,11 @@ describe('Hotaru', function () {
   });
 
   it('should tell you if someone is a guest', () => {
-    const user1 = new HotaruUser({});
+    const user1 = new HotaruUser(new UserDataStore({}));
     expect(user1.isGuest()).toBeTruthy();
-    const user2 = new HotaruUser({ email: null });
+    const user2 = new HotaruUser(new UserDataStore({ email: null }));
     expect(user2.isGuest()).toBeTruthy();
-    const user3 = new HotaruUser({ email: 'blabla' });
+    const user3 = new HotaruUser(new UserDataStore({ email: 'blabla' }));
     expect(user3.isGuest()).toBeFalsy();
   });
 });
