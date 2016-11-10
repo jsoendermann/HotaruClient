@@ -6,7 +6,7 @@ import install from 'jasmine-es6';
 import toBeAnAlphanumericString from 'to-be-an-alphanumeric-string';
 import decache from 'decache';
 
-import { HotaruServer, MongoAdapter } from '../../server/lib/'; // TODO import package
+import { HotaruServer, MongoAdapter } from 'hotaru-server'; // TODO import package
 
 
 install();
