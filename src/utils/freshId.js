@@ -8,7 +8,7 @@ export function freshId(length = 15) {
   let id = '';
 
   for (let i = 0; i < length; i++) {
-    id += ALPHANUM.chatAt(Math.floor(Math.random() * ALPHANUM.length));
+    id += ALPHANUM.charAt(Math.floor(Math.random() * ALPHANUM.length));
   }
 
   return id;
