@@ -111,11 +111,6 @@
     "message": "Hotaru.initialize called with storage undefined"
   },
   {
-    "name": "INVALID_STORAGE",
-    "code": 701,
-    "message": "Hotaru.initialize called with invalid storage"
-  },
-  {
     "name": "SSL_REQUIRED",
     "code": 702,
     "message": "Hotaru.initialize called with non-https url, set overrideSSLRequirement to true to override"

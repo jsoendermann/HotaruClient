@@ -33,7 +33,7 @@ describe('HotaruUser', function () {
     try {
       user.get('__bla');
     } catch (error) {
-      expect(error.code).toEqual(HotaruError.NON_ALPHANUMERIC_FIELD_NAME);
+      expect(error.code).toEqual(new HotaruError('NON_ALPHANUMERIC_FIELD_NAME').code);
     }
   });
 
@@ -42,7 +42,7 @@ describe('HotaruUser', function () {
     try {
       user.set('__bla', 1);
     } catch (error) {
-      expect(error.code).toEqual(HotaruError.NON_ALPHANUMERIC_FIELD_NAME);
+      expect(error.code).toEqual(new HotaruError('NON_ALPHANUMERIC_FIELD_NAME').code);
     }
   });
 

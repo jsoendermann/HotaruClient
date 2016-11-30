@@ -17,7 +17,7 @@ describe('Hotaru', function () {
     const HOTARU_IMPORT_PATH = '../lib/';
     decache(HOTARU_IMPORT_PATH);
     this.Hotaru = require(HOTARU_IMPORT_PATH).Hotaru;
-    await this.Hotaru.initialize('http://localhost:3002/api/', { overrideSSLRequirement: true, storage: 'no storage' });
+    await this.Hotaru.initialize({ serverUrl: 'http://localhost:3002/api/', overrideSSLRequirement: true });
   });
 
   it('should log in as guest', async function () {
