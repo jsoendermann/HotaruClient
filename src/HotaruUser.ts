@@ -3,22 +3,22 @@ import { HotaruError } from './';
 import { IUserDataStore } from './UserDataStore';
 import { freshId } from './utils';
 
-interface UserChangeBody {
+export interface UserChangeBody {
   _id: string;
   date: any;
   field: string;
   value: any;
 }
 
-interface SetUserChange extends UserChangeBody {
+export interface SetUserChange extends UserChangeBody {
   type: 'set';
 }
 
-interface IncrementUserChange extends UserChangeBody {
+export interface IncrementUserChange extends UserChangeBody {
   type: 'increment';
 }
 
-interface AppendUserChange extends UserChangeBody {
+export interface AppendUserChange extends UserChangeBody {
   type: 'append';
 }
 
