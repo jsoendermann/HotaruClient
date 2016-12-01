@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { isAlphanumeric } from 'validator';
+import freshId from 'fresh-id';
 import { HotaruUser, UserChange } from './HotaruUser';
 import { HotaruError } from './HotaruError';
-import { freshId } from './utils';
+
 
 const INSTALLATION_ID_KEY = 'com.primlo.hotaru.installationId';
 const SESSION_ID_KEY = 'com.primlo.hotaru.currentSessionId';

@@ -1,7 +1,8 @@
 import { isAlphanumeric } from 'validator';
+import freshId from 'fresh-id';
 import { HotaruError } from './';
 import { IUserDataStore } from './UserDataStore';
-import { freshId } from './utils';
+
 
 export interface UserChangeBody {
   _id: string;
