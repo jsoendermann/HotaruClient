@@ -5,8 +5,8 @@ export interface IUserDataStore {
   get: (field: string) => any;
   set: (field: string, value: any) => void;
   appendChange: (change: UserChange) => void;
-  getRawData: () => any;
-  getChangelog: () => any;
+  getRawData: () => { [field: string]: any };
+  getChangelog: () => UserChange[];
 }
 
 export class UserDataStore {
