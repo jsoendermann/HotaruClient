@@ -182,6 +182,9 @@ export namespace Hotaru {
         }
         userChangelog.push(change);
       },
+      // The user doesn't need access to these
+      getRawData: () => null,
+      getChangelog: () => null,
     });
     Object.seal(user);
     return user;
