@@ -1,8 +1,6 @@
 {
   "presets": ["latest"],
   "plugins": [
-    "transform-runtime",
-    "transform-async-to-generator", 
     [
       "babel-plugin-transform-builtin-extend", {
             "globals": ["Error"]
