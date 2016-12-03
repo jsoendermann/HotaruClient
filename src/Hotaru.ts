@@ -100,7 +100,7 @@ export namespace Hotaru {
 
   export const initialize = async ({ serverUrl, privateMode = false, overrideSSLRequirement = false, storage }: InitializationParameters) => {
     if (hasBeenInitialized) {
-      throw new HotaruError('ALREADY_INITIALIZED');
+      throw new HotaruError(HotaruError.ALREADY_INITIALIZED);
     }
 
     storageController = new StorageController(storage);
@@ -109,7 +109,7 @@ export namespace Hotaru {
     }
 
     if (!serverUrl.startsWith('https://') && !overrideSSLRequirement) {
-      throw new HotaruError('SSL_REQUIRED');
+      throw new HotaruError(HotaruError.SSL_REQUIRED);
     }
 
     if (!serverUrl.endsWith('/')) {
@@ -173,7 +173,7 @@ export namespace Hotaru {
 
   const ensureInitialization = (): void => {
     if (!hasBeenInitialized) {
-      throw new HotaruError('UNINITIALIZED');
+      throw new HotaruError(HotaruError.UNINITIALIZED);
     }
   }
 
@@ -207,7 +207,7 @@ export namespace Hotaru {
     ensureInitialization();
 
     if (userData !== null || userChangelog !== null) {
-      throw new HotaruError('STILL_LOGGED_IN');
+      throw new HotaruError(HotaruError.STILL_LOGGED_IN);
     }
 
     const result = await makeRequest('_logInAsGuest', {});
@@ -224,7 +224,7 @@ export namespace Hotaru {
     ensureInitialization();
 
     if (userData !== null || userChangelog !== null) {
-      throw new HotaruError('STILL_LOGGED_IN');
+      throw new HotaruError(HotaruError.STILL_LOGGED_IN);
     }
 
     const result = await makeRequest('_signUp', { email, password });
@@ -253,7 +253,7 @@ export namespace Hotaru {
     ensureInitialization();
 
     if (userData !== null || userChangelog !== null) {
-      throw new HotaruError('STILL_LOGGED_IN');
+      throw new HotaruError(HotaruError.STILL_LOGGED_IN);
     }
 
     const result = await makeRequest('_logIn', { email, password });
@@ -301,7 +301,7 @@ export namespace Hotaru {
     ensureInitialization();
 
     if (!isAlphanumeric(funcName)) {
-      throw new HotaruError('NON_ALPHANUMERIC_FUNCTION_NAME');
+      throw new HotaruError(HotaruError.NON_ALPHANUMERIC_FUNCTION_NAME);
     }
 
     const result = await makeRequest(funcName, { sessionId: sessionId, params });

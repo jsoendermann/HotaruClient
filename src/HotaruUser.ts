@@ -40,7 +40,7 @@ export class HotaruUser {
 
   get(field: string): any {
     if (!isAlphanumeric(field) && field !== '_id') {
-      throw new HotaruError('NON_ALPHANUMERIC_FIELD_NAME');
+      throw new HotaruError(HotaruError.NON_ALPHANUMERIC_FIELD_NAME);
     }
 
     return this.dataStore.get(field);
@@ -48,11 +48,11 @@ export class HotaruUser {
 
   set(field: string, value: any) {
     if (!isAlphanumeric(field)) {
-      throw new HotaruError('NON_ALPHANUMERIC_FIELD_NAME');
+      throw new HotaruError(HotaruError.NON_ALPHANUMERIC_FIELD_NAME);
     }
 
     if (this.dataStore.set === undefined) {
-      throw new HotaruError('READ_ONLY_USER');
+      throw new HotaruError(HotaruError.READ_ONLY_USER);
     }
 
     this.dataStore.set(field, value);
@@ -75,18 +75,18 @@ export class HotaruUser {
 
   increment(field: string, value: number = 1) {
     if (!isAlphanumeric(field)) {
-      throw new HotaruError('NON_ALPHANUMERIC_FIELD_NAME');
+      throw new HotaruError(HotaruError.NON_ALPHANUMERIC_FIELD_NAME);
     }
 
     if (this.dataStore.get(field) === undefined) {
       this.dataStore.set(field, 0);
     }
     if (typeof this.dataStore.get(field) !== 'number') {
-      throw new HotaruError('CAN_ONLY_INCREMENT_AND_DECREMENT_NUMBERS', `${field} is of type ${typeof this.dataStore.get(field)}`);
+      throw new HotaruError(HotaruError.CAN_ONLY_INCREMENT_AND_DECREMENT_NUMBERS, `${field} is of type ${typeof this.dataStore.get(field)}`);
     }
 
     if (this.dataStore.set === undefined) {
-      throw new HotaruError('READ_ONLY_USER');
+      throw new HotaruError(HotaruError.READ_ONLY_USER);
     }
 
     this.dataStore.set(field, this.dataStore.get(field) + value);
@@ -108,14 +108,14 @@ export class HotaruUser {
 
   append(field: string, value: any) {
     if (!isAlphanumeric(field)) {
-      throw new HotaruError('NON_ALPHANUMERIC_FIELD_NAME');
+      throw new HotaruError(HotaruError.NON_ALPHANUMERIC_FIELD_NAME);
     }
 
     if (this.dataStore.get(field) === undefined) {
       this.dataStore.set(field, []);
     }
     if (!Array.isArray(this.dataStore.get(field))) {
-      throw new HotaruError('CAN_ONLY_APPEND_TO_ARRAYS', `${field} is of type ${typeof this.dataStore.get(field)}`);
+      throw new HotaruError(HotaruError.CAN_ONLY_APPEND_TO_ARRAYS, `${field} is of type ${typeof this.dataStore.get(field)}`);
     }
 
     this.dataStore.set(field, [...this.dataStore.get(field), value]);
