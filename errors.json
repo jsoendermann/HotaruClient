@@ -104,6 +104,11 @@
     "code": 520,
     "message": "Schema conformance error"
   },
+  {
+    "name": "CLASS_NOT_IN_SCHEMA",
+    "code": 521,
+    "message": "Class not in schema"
+  },
 
 
 
