@@ -99,6 +99,11 @@
     "code": 519,
     "message": "Invalid change type"
   },
+  {
+    "name": "SCHEMA_CONFORMANCE_ERROR",
+    "code": 520,
+    "message": "Schema conformance error"
+  },
 
 
 
