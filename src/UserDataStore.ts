@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import { UserChange } from './HotaruUser';
 
-export interface IUserDataStore {
+export interface UserDataStore {
   get: (field: string) => any;
   set: (field: string, value: any) => void;
   appendChange: (change: UserChange) => void;
@@ -9,7 +9,7 @@ export interface IUserDataStore {
   getChangelog: () => UserChange[];
 }
 
-export class UserDataStore {
+export class SelfContainedUserDataStore implements UserDataStore {
   private data: { [field: string]: any };
   private changelog: UserChange[]
 

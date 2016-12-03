@@ -1,7 +1,7 @@
 import { isAlphanumeric } from 'validator';
 import freshId from 'fresh-id';
 import { HotaruError } from './';
-import { IUserDataStore } from './UserDataStore';
+import { UserDataStore } from './UserDataStore';
 
 
 export interface UserChangeBody {
@@ -28,13 +28,13 @@ export type UserChange = SetUserChange | IncrementUserChange | AppendUserChange;
 
 
 export class HotaruUser {
-  private dataStore: IUserDataStore;
+  private dataStore: UserDataStore;
 
-  constructor(dataStore: IUserDataStore) {
+  constructor(dataStore: UserDataStore) {
     this.dataStore = dataStore;
   }
 
-  _getDataStore(): IUserDataStore {
+  _getDataStore(): UserDataStore {
     return this.dataStore;
   }
 
