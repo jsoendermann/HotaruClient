@@ -23,54 +23,66 @@ export interface Storage {
   removeItem: (key: string) => Promise<void>;
 }
 
+class EphemeralStorage implements Storage {
+  private data = {} as any;
+
+  async getItem(key: string): Promise<any> {
+    return this.data[key];
+  }
+
+  async setItem(key: string, value: any): Promise<void> {
+    this.data[key] = value;
+  }
+
+  async removeItem(key: string): Promise<void> {
+    delete this.data[key];
+  }
+}
+
 class StorageController {
-  constructor(private storage: Storage) { }
+  private storage: Storage;
+
+  constructor(storage: Storage) {
+    if (storage) {
+      this.storage = storage;
+    } else {
+      this.storage = new EphemeralStorage();
+    }
+  }
 
   public async getPrimitive(key: string): Promise<any> {
-    if (this.storage != null) {
-      return this.storage.getItem(key);
-    }
-    return null;
+    return this.storage.getItem(key);
   }
 
   public async setPrimitive(key: string, value: boolean | number | string): Promise<void> {
-    if (this.storage != null) {
-      return this.storage.setItem(key, value);
-    }
+    return this.storage.setItem(key, value);
   }
 
   public async getObject(key: string): Promise<any> {
-    if (this.storage != null) {
-      const json = await this.storage.getItem(key);
+    const json = await this.storage.getItem(key);
 
-      if (json !== null) {
-        return JSON.parse(json, (key, value) => {
-          if (typeof value === 'string') {
-            const a = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)Z$/.exec(value);
-            if (a) {
-              return new Date(Date.UTC(+a[1], +a[2] - 1, +a[3], +a[4], +a[5], +a[6]));
-            }
+    if (json !== null) {
+      return JSON.parse(json, (key, value) => {
+        if (typeof value === 'string') {
+          const a = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)Z$/.exec(value);
+          if (a) {
+            return new Date(Date.UTC(+a[1], +a[2] - 1, +a[3], +a[4], +a[5], +a[6]));
           }
-          return value;
-        });
-      } else {
-        return null;
-      }
+        }
+        return value;
+      });
+    } else {
+      return null;
     }
-    return null;
   }
 
   public async setObject(key: string, value: any): Promise<void> {
-    if (this.storage != null) {
-      const json = JSON.stringify(value);
-      return this.storage.setItem(key, json);
-    }
+    const json = JSON.stringify(value);
+    return this.storage.setItem(key, json);
   }
 
   public async removeItem(key: string): Promise<void> {
-    if (this.storage != null) {
-      return this.storage.removeItem(key);
-    }
+    return this.storage.removeItem(key);
   }
 }
 
