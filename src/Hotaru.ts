@@ -6,7 +6,7 @@ import { HotaruError } from './HotaruError';
 
 
 const INSTALLATION_ID_KEY = 'com.primlo.hotaru.installationId';
-const SESSION_ID_KEY = 'com.primlo.hotaru.currentSessionId';
+const SESSION_ID_KEY = 'com.primlo.hotaru.sessionId';
 const USER_DATA_KEY = 'com.primlo.hotaru.userData';
 const USER_CHANGELOG_KEY = 'com.primlo.hotaru.userChangelog';
 
