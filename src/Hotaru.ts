@@ -274,7 +274,6 @@ export namespace Hotaru {
     ensureInitialization();
 
     await synchronizeUser();
-
     await makeRequest('_logOut', { sessionId: sessionId });
 
     await clearUserDataAndSession();
