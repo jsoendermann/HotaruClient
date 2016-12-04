@@ -36,6 +36,7 @@ export class HotaruError extends Error {
   static INVALID_CHANGE_TYPE = 519;
   static SCHEMA_CONFORMANCE_ERROR = 520;
   static CLASS_NOT_IN_SCHEMA = 521;
+  static NON_ALPHANUMERIC_CLOUD_FUNCTION_NAME = 522;
 
   // Client errors
   static STORAGE_UNDEFINED = 700;
