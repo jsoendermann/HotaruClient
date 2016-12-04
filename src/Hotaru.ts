@@ -14,12 +14,18 @@ const USER_DATA_KEY = 'com.primlo.hotaru.userData';
 const USER_CHANGELOG_KEY = 'com.primlo.hotaru.userChangelog';
 
 
+/**
+ * Storage interface compatible with LocalStorage and React Native's AsyncStorage.
+ */
 export interface Storage {
   getItem: (key: string) => Promise<any>;
   setItem: (key: string, value: any) => Promise<void>;
   removeItem: (key: string) => Promise<void>;
 }
 
+/**
+ * The default storage engine that doesn't persist anything between restarts.
+ */
 class EphemeralStorage implements Storage {
   private data = {} as any;
 
@@ -36,6 +42,9 @@ class EphemeralStorage implements Storage {
   }
 }
 
+/**
+ * This class wraps the Storage interface so that we can get and set objects directly.
+ */
 class StorageController {
   private storage: Storage;
 
@@ -83,6 +92,9 @@ export interface InitializationParameters {
   masterKey?: string;
 }
 
+/**
+ * The main object. Hotaru is a singleton that should not be cloned.
+ */
 export namespace Hotaru {
   let hasBeenInitialized = false;
   let masterKey_: string;
