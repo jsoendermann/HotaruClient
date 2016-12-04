@@ -5,6 +5,7 @@ import { parse, stringify } from 'date-aware-json';
 
 import { HotaruUser, UserChange } from './HotaruUser';
 import { HotaruError } from './HotaruError';
+import { Query } from './Query';
 
 
 const INSTALLATION_ID_KEY = 'com.primlo.hotaru.installationId';
@@ -12,12 +13,6 @@ const SESSION_ID_KEY = 'com.primlo.hotaru.sessionId';
 const USER_DATA_KEY = 'com.primlo.hotaru.userData';
 const USER_CHANGELOG_KEY = 'com.primlo.hotaru.userChangelog';
 
-export interface InitializationParameters {
-  serverUrl: string;
-  privateMode: boolean;
-  overrideSSLRequirement: boolean;
-  storage: Storage;
-}
 
 export interface Storage {
   getItem: (key: string) => Promise<any>;
@@ -80,11 +75,20 @@ class StorageController {
   }
 }
 
+export interface InitializationParameters {
+  serverUrl: string;
+  privateMode: boolean;
+  overrideSSLRequirement: boolean;
+  storage?: Storage;
+  masterKey?: string;
+}
+
 export namespace Hotaru {
   let hasBeenInitialized = false;
+  let masterKey_: string;
   let storageController: StorageController;
   let serverUrl_: string;
-  let privateMode: boolean;
+  let privateMode_: boolean;
 
   let sessionId: string;
   let userData: any;
@@ -92,7 +96,7 @@ export namespace Hotaru {
 
   let installationId_: string;
 
-  export const initialize = async ({ serverUrl, privateMode = false, overrideSSLRequirement = false, storage }: InitializationParameters) => {
+  export const initialize = async ({ serverUrl, privateMode = false, overrideSSLRequirement = false, storage, masterKey }: InitializationParameters) => {
     if (hasBeenInitialized) {
       throw new HotaruError(HotaruError.ALREADY_INITIALIZED);
     }
@@ -112,7 +116,8 @@ export namespace Hotaru {
       serverUrl_ = serverUrl;
     }
 
-    privateMode = privateMode;
+    privateMode_ = privateMode;
+    masterKey_ = masterKey
 
     await loadData();
 
@@ -126,6 +131,7 @@ export namespace Hotaru {
   const makeRequest = async (endpoint: string, params: any): Promise<any> => {
     const paramsAndOtherStuff = Object.assign({}, params, {
       installationId: await getInstallationId(),
+      masterKey: masterKey_ || null,
       // SDK version
       // OS (name/version)
     });
@@ -269,7 +275,7 @@ export namespace Hotaru {
 
     await synchronizeUser();
 
-    makeRequest('_logOut', { sessionId: sessionId });
+    await makeRequest('_logOut', { sessionId: sessionId });
 
     await clearUserDataAndSession();
   }
@@ -277,6 +283,15 @@ export namespace Hotaru {
   export const forceLogOut = async (): Promise<void> => {
     ensureInitialization();
     clearUserDataAndSession();
+  }
+
+  export const runQuery = async(query: Query): Promise<any[]> => {
+    if (!masterKey_) {
+      throw new HotaruError(HotaruError.MASTER_KEY_REQUIRED);
+    }
+
+    const response = await makeRequest('_runQuery', { masterKey: masterKey_, queryData: query.serialize() });
+    return response.queryResult;
   }
 
   export const synchronizeUser = async (): Promise<void> => {

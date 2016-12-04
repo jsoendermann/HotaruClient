@@ -37,6 +37,7 @@ export class HotaruError extends Error {
   static SCHEMA_CONFORMANCE_ERROR = 520;
   static CLASS_NOT_IN_SCHEMA = 521;
   static NON_ALPHANUMERIC_CLOUD_FUNCTION_NAME = 522;
+  static INCORRECT_MASTER_KEY = 523;
 
   // Client errors
   static STORAGE_UNDEFINED = 700;
@@ -44,6 +45,7 @@ export class HotaruError extends Error {
   static STILL_LOGGED_IN = 703;
   static UNINITIALIZED = 704;
   static ALREADY_INITIALIZED = 705;
+  static MASTER_KEY_REQUIRED = 706;
 
   // Server & client errors
   static NON_ALPHANUMERIC_FIELD_NAME = 900;
