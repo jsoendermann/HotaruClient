@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { isAlphanumeric } from 'validator';
 import freshId from 'fresh-id';
+import { parse, stringify } from 'date-aware-json';
+
 import { HotaruUser, UserChange } from './HotaruUser';
 import { HotaruError } from './HotaruError';
 
@@ -62,22 +64,14 @@ class StorageController {
     const json = await this.storage.getItem(key);
 
     if (json != null) {
-      return JSON.parse(json, (key, value) => {
-        if (typeof value === 'string') {
-          const a = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)Z$/.exec(value);
-          if (a) {
-            return new Date(Date.UTC(+a[1], +a[2] - 1, +a[3], +a[4], +a[5], +a[6]));
-          }
-        }
-        return value;
-      });
+      return parse(json);
     } else {
       return null;
     }
   }
 
   public async setObject(key: string, value: any): Promise<void> {
-    const json = JSON.stringify(value);
+    const json = stringify(value);
     return this.storage.setItem(key, json);
   }
 
@@ -136,15 +130,19 @@ export namespace Hotaru {
       // OS (name/version)
     });
 
-    const response = await axios.post(serverUrl_ + endpoint, params);
-    if (response.data.status !== 'ok') {
-      if (response.data.code && response.data.code >= 500) {
-        throw new HotaruError(response.data.code);
+    const serverResponse = await axios.post(serverUrl_ + endpoint, {
+      payload: stringify(params)
+    });
+
+    const response = parse(serverResponse.data.payload);
+    if (response.status !== 'ok') {
+      if (response.code && response.code >= 500) {
+        throw new HotaruError(response.code);
       }
-      const error = new Error(response.data.message);
+      const error = new Error(response.message);
       throw error;
     }
-    return response.data.result;
+    return response.result;
   }
 
   const loadData = async (): Promise<void> => {

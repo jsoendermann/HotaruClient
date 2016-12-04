@@ -15,6 +15,7 @@
   "typings": "./lib/definitions/index.d.ts",
   "dependencies": {
     "axios": "^0.15.2",
+    "date-aware-json": "^0.1.0",
     "fresh-id": "^1.0.0",
     "lodash": "^4.16.6",
     "validator": "^6.1.0"
