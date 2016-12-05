@@ -84,13 +84,32 @@ class StorageController {
   }
 }
 
+export type RequestFunction = (url: string, params: any) => Promise<any>;
+
 export interface InitializationParameters {
   serverUrl: string;
-  privateMode: boolean;
-  overrideSSLRequirement: boolean;
+  privateMode?: boolean;
+  overrideSSLRequirement?: boolean;
   storage?: Storage;
   masterKey?: string;
+  requestFunction?: RequestFunction;
 }
+
+const defaultRequestFunction = async (url: string, params: any): Promise<any> => {
+  const serverResponse = await axios.post(url, { payload: stringify(params) });
+  const data = parse(serverResponse.data.payload);
+
+  if (data.status !== 'ok') {
+    if (data.code && data.code >= 500) {
+      throw new HotaruError(data.code);
+    }
+    const error = new Error(data.message);
+    throw error;
+  }
+
+  return data.result;
+}
+
 
 /**
  * The main object. Hotaru is a singleton that should not be cloned.
@@ -101,6 +120,7 @@ export namespace Hotaru {
   let storageController: StorageController;
   let serverUrl_: string;
   let privateMode_: boolean;
+  let requestFunction_: RequestFunction;
 
   let sessionId: string;
   let userData: any;
@@ -108,7 +128,7 @@ export namespace Hotaru {
 
   let installationId_: string;
 
-  export const initialize = async ({ serverUrl, privateMode = false, overrideSSLRequirement = false, storage, masterKey }: InitializationParameters) => {
+  export const initialize = async ({ serverUrl, privateMode = false, overrideSSLRequirement = false, storage, masterKey, requestFunction = defaultRequestFunction }: InitializationParameters) => {
     if (hasBeenInitialized) {
       throw new HotaruError(HotaruError.ALREADY_INITIALIZED);
     }
@@ -129,7 +149,8 @@ export namespace Hotaru {
     }
 
     privateMode_ = privateMode;
-    masterKey_ = masterKey
+    masterKey_ = masterKey;
+    requestFunction_ = requestFunction;
 
     await loadData();
 
@@ -148,19 +169,7 @@ export namespace Hotaru {
       // OS (name/version)
     });
 
-    const serverResponse = await axios.post(serverUrl_ + endpoint, {
-      payload: stringify(params)
-    });
-
-    const response = parse(serverResponse.data.payload);
-    if (response.status !== 'ok') {
-      if (response.code && response.code >= 500) {
-        throw new HotaruError(response.code);
-      }
-      const error = new Error(response.message);
-      throw error;
-    }
-    return response.result;
+    return requestFunction_(serverUrl_ + endpoint, paramsAndOtherStuff);
   }
 
   const loadData = async (): Promise<void> => {
@@ -296,7 +305,7 @@ export namespace Hotaru {
     clearUserDataAndSession();
   }
 
-  export const runQuery = async(query: Query): Promise<any[]> => {
+  export const runQuery = async (query: Query): Promise<any[]> => {
     if (!masterKey_) {
       throw new HotaruError(HotaruError.MASTER_KEY_REQUIRED);
     }
@@ -313,7 +322,7 @@ export namespace Hotaru {
       clientChangelog: userChangelog,
     });
 
-    userData = result.user;
+    userData = result.userData;
 
     const processedChanges = result.processedChanges;
     userChangelog = userChangelog.filter(c => !processedChanges.includes(c._id));

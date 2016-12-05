@@ -3,7 +3,8 @@
     "./**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "__tests__"
   ],
   "compilerOptions": {
     "target": "es6",

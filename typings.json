@@ -4,6 +4,7 @@
     "validator": "registry:npm/validator#5.7.0+20160912014851"
   },
   "globalDependencies": {
+    "jest": "registry:dt/jest#16.0.0+20161025131017",
     "node": "registry:dt/node#6.0.0+20161121110008"
   }
 }

@@ -13,7 +13,7 @@ export class SelfContainedUserDataStore implements UserDataStore {
   private data: { [field: string]: any };
   private changelog: UserChange[]
 
-  constructor(data: { [field: string]: any }, changelog: UserChange[]) {
+  constructor(data: { [field: string]: any }, changelog?: UserChange[]) {
     this.data = _.cloneDeep(data);
     this.changelog = _.cloneDeep(changelog || []);
   }

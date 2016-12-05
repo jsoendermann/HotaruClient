@@ -1,20 +1,8 @@
-/* global jasmine, beforeAll, describe, it, expect */
-/* eslint prefer-arrow-callback:0, func-names:0, global-require:0, import/no-extraneous-dependencies:0 */
+/// <reference path="../typings/globals/jest/index.d.ts" />
 
-import install from 'jasmine-es6';
-import toBeAnAlphanumericString from 'to-be-an-alphanumeric-string';
-
-import { HotaruUser, HotaruError } from '../lib/';
-import { SelfContainedUserDataStore } from '../lib/UserDataStore';
-
-install();
-
+import { HotaruUser, HotaruError, SelfContainedUserDataStore, UserChange } from '../src/';
 
 describe('HotaruUser', function () {
-  beforeAll(async function () {
-    jasmine.addMatchers({ toBeAnAlphanumericString });
-  });
-
   it('should construct user objects', async function () {
     const data = {};
     const userDataStore = new SelfContainedUserDataStore(data, []);
@@ -38,7 +26,7 @@ describe('HotaruUser', function () {
   });
 
   it('should only allow setting alphanumeric fields', async function () {
-    const user = new HotaruUser({});
+    const user = new HotaruUser(new SelfContainedUserDataStore({}));
     try {
       user.set('__bla', 1);
     } catch (error) {
@@ -52,7 +40,7 @@ describe('HotaruUser', function () {
     expect(user.get('a')).toEqual(42);
   });
 
-  const s = changelog => changelog.map(entry => ({
+  const s = (changelog: UserChange[]) => changelog.map(entry => ({
     type: entry.type,
     field: entry.field,
     value: entry.value,
