@@ -52,8 +52,8 @@ export class Query {
   private className_: string;
   private selectors_: Selector[];
   private sortOperators_: SortOperator[];
-  private limit_?: number;
-  private skip_?: number;
+  private limit_?: number | null;
+  private skip_?: number | null;
   
 
   constructor(className: string) {
@@ -160,19 +160,19 @@ export class Query {
   }
 
 
-  get limit(): number {
-    return this.limit_;
+  get limit(): number | null {
+    return this.limit_ || null;
   }
 
-  set limit(limit: number) {
+  set limit(limit: number | null) {
     this.limit_ = limit;
   }
 
-  get skip(): number {
-    return this.skip_;
+  get skip(): number | null {
+    return this.skip_ || null;
   }
 
-  set skip(skip: number) {
+  set skip(skip: number | null) {
     this.skip_ = skip;
   }
 }

@@ -10,6 +10,7 @@
     "target": "es6",
     "moduleResolution": "node",
     "noImplicitAny": true,
+    "strictNullChecks": true,
     "experimentalDecorators": true,
     "lib": ["es2016", "dom"],
     "declaration": true

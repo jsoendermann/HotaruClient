@@ -5,8 +5,8 @@ export interface UserDataStore {
   get: (field: string) => any;
   set: (field: string, value: any) => void;
   appendChange: (change: UserChange) => void;
-  getRawData: () => { [field: string]: any };
-  getChangelog: () => UserChange[];
+  getRawData: () => { [field: string]: any } | null;
+  getChangelog: () => UserChange[] | null;
 }
 
 export class SelfContainedUserDataStore implements UserDataStore {

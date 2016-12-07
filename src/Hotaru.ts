@@ -48,7 +48,7 @@ class EphemeralStorage implements Storage {
 class StorageController {
   private storage: Storage;
 
-  constructor(storage: Storage) {
+  constructor(storage: Storage | undefined) {
     if (storage) {
       this.storage = storage;
     } else {
@@ -116,15 +116,15 @@ const defaultRequestFunction = async (url: string, params: any): Promise<any> =>
  */
 export namespace Hotaru {
   let hasBeenInitialized = false;
-  let masterKey_: string;
+  let masterKey_: string | null;
   let storageController: StorageController;
   let serverUrl_: string;
   let privateMode_: boolean;
   let requestFunction_: RequestFunction;
 
-  let sessionId: string;
-  let userData: any;
-  let userChangelog: UserChange[];
+  let sessionId: string | null;
+  let userData: { [key: string]: any } | null;
+  let userChangelog: UserChange[] | null;
 
   let installationId_: string;
 
@@ -149,7 +149,7 @@ export namespace Hotaru {
     }
 
     privateMode_ = privateMode;
-    masterKey_ = masterKey;
+    masterKey_ = masterKey || null;
     requestFunction_ = requestFunction;
 
     await loadData();
@@ -188,7 +188,11 @@ export namespace Hotaru {
   }
 
   const saveSessionIdToDisk = async (): Promise<void> => {
-    return storageController.setPrimitive(SESSION_ID_KEY, sessionId);
+    if (sessionId) {
+      return storageController.setPrimitive(SESSION_ID_KEY, sessionId);
+    } else {
+      return storageController.removeItem(SESSION_ID_KEY);
+    }
   }
 
   const saveUserToDisk = async (): Promise<void> => {
@@ -203,7 +207,7 @@ export namespace Hotaru {
   }
 
   // TODO what happens if we log in, get a user, then log out. the user object will point to nothing
-  export const currentUser = (): HotaruUser => {
+  export const currentUser = (): HotaruUser | null => {
     ensureInitialization();
 
     if (userData === null || userChangelog === null || sessionId === null) {
@@ -211,9 +215,11 @@ export namespace Hotaru {
     }
 
     const user = new HotaruUser({
-      get: (field) => userData[field],
-      set: (field, value) => { userData[field] = value; },
+      get: (field) => userData ? userData[field] : null,
+      set: (field, value) => { userData && (userData[field] = value); },
       appendChange: (change) => {
+        if (!userChangelog) return;
+
         if (change.type === 'set') {
           userChangelog = userChangelog.filter(c => c.field !== change.field);
         }
@@ -316,6 +322,8 @@ export namespace Hotaru {
 
   export const synchronizeUser = async (): Promise<void> => {
     ensureInitialization();
+
+    if (!userChangelog) return;
 
     const result = await makeRequest('_synchronizeUser', {
       sessionId: sessionId,
