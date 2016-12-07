@@ -38,6 +38,7 @@ export class HotaruError extends Error {
   static CLASS_NOT_IN_SCHEMA = 521;
   static NON_ALPHANUMERIC_CLOUD_FUNCTION_NAME = 522;
   static INCORRECT_MASTER_KEY = 523;
+  static NO_PAYLOAD_SENT = 524;
 
   // Client errors
   static STORAGE_UNDEFINED = 700;
@@ -77,6 +78,9 @@ export class HotaruError extends Error {
     519: "Invalid change type",
     520: "Schema conformance error",
     521: "Class not in schema",
+    522: "Non alphanumeric cloud function name",
+    523: "Incorrect master key",
+    524: "No payload sent",
     700: "Hotaru.initialize called with storage undefined",
     702: "Hotaru.initialize called with non-https url, set overrideSSLRequirement to true to override",
     703: "Can't log in or sign up when still logged in, log out first",
