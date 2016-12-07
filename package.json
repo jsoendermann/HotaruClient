@@ -1,6 +1,6 @@
 {
   "name": "hotaru",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "license": "MIT",
   "author": {
     "name": "Jan Soendermann",
@@ -16,7 +16,7 @@
   "dependencies": {
     "axios": "^0.15.2",
     "date-aware-json": "^0.1.0",
-    "fresh-id": "^1.0.1",
+    "fresh-id": "^1.0.2",
     "lodash": "^4.16.6",
     "validator": "^6.1.0"
   },
