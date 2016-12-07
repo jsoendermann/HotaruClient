@@ -96,8 +96,8 @@ export interface InitializationParameters {
 }
 
 const defaultRequestFunction = async (url: string, params: any): Promise<any> => {
-  const serverResponse = await axios.post(url, { payload: stringify(params) });
-  const data = parse(serverResponse.data.payload);
+  const serverResponse = await axios.post(url, { payloadString: stringify(params) });
+  const data = parse(serverResponse.data.payloadString);
 
   if (data.status !== 'ok') {
     if (data.code && data.code >= 500) {
